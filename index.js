@@ -41,7 +41,7 @@ function output(arr,result,tot){
        
     }
     output += `</tr></table>`;
-    document.getElementById("table-solve").innerHTML = `<div id= "table-WO"> ${output} <p id="${result}"> Average WT: ${tot} / ${arr.length-1} = ${(tot/arr.length).toFixed(2)}ms</p> </div>`; 
+    document.getElementById("table-solve").innerHTML = `<div id= "table-WO"> ${output} <p id="${result}"> Average WT: ${tot} / ${arr.lengt} = ${(tot/arr.length).toFixed(2)}ms</p> </div>`; 
 
 }
 
