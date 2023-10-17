@@ -103,7 +103,7 @@ function userInput() {
             document.getElementById("alrt").innerHTML = "";
             document.getElementById("label-gantt").innerHTML = "Gantt Chart";
         } else {
-            alert('not equal');
+            alert('Not equal!');
             return;
         }
 
