@@ -45,7 +45,11 @@ function output(arr,result,tot){
 
 }
 
-
+function clr(){
+    document.getElementById("AT").value = "";
+    document.getElementById("BT").value = "";
+    document.getElementById("TQ").value = "";
+}
 
 function clrOutput() {
     document.getElementById("label-gantt").innerHTML= "";
@@ -81,8 +85,7 @@ function fillArray(bol, sze, AT, BT){
 }
 
 function userInput() {
-    clrOutput();
-
+    clrOutput();  
     let AT = document.getElementById("AT").value.trim();
     let BT = document.getElementById("BT").value.trim();
     let TQ = parseFloat(document.getElementById("TQ").value);
@@ -99,7 +102,6 @@ function userInput() {
             withAT();
             document.getElementById("alrt").innerHTML = "";
             document.getElementById("label-gantt").innerHTML = "Gantt Chart";
-    
         } else {
             alert('not equal');
             return;
@@ -111,50 +113,47 @@ function userInput() {
         timequantum = TQ;
         withoAT();
         document.getElementById("alrt").innerHTML = "";
-        document.getElementById("label-gantt").innerHTML = "Gantt Chart";
+        document.getElementById("label-gantt").innerHTML = "Gantt Chart";  
     }else alert("NUMBER ONLY!\nPlease fill in the required field");
+    clr();
 }
 
-
- 
-
 function withAT() {
-      let time = 0, TATtotal = 0, WTtotal = 0;
+    let time = 0, TATtotal = 0, WTtotal = 0;
 
-      while (manipulateArr.length > 0) {
-       
-           let procss = manipulateArr.shift();
-           let next = manipulateArr.length > 0 ? manipulateArr[0][1] : null;
-          
-           if (procss[2] >= timequantum) {
-               ganttchrtArr[ganttchrtArr.length] = [procss[0], time += timequantum]; 
-               procss[2] -= timequantum;
-               manipulateArr.push(procss);
+    while (manipulateArr.length > 0) {
+     
+         let procss = manipulateArr.shift();
+         let next = manipulateArr.length > 0 ? manipulateArr[0][1] : null;
+
+         if (procss[2] > timequantum) {
+             ganttchrtArr[ganttchrtArr.length++] = [procss[0], time += timequantum]; 
+             procss[2] -= timequantum;
+             manipulateArr.push(procss);
+
+             if(time < next){
+                manipulateArr.unshift(procss);
+             }
+
+         } else if (procss[2] != 0) {
+             ganttchrtArr[ganttchrtArr.length++] = [procss[0], time += procss[2]];
+             procss[2] -= procss[2];
              
-               if(time < next && procss[2] > 0){
-                  manipulateArr.unshift(procss);
-               }else  if(time < next && procss[2] == 0){
-                  ganttchrtArr[ganttchrtArr.length] = ["///", time += (next - time)];
-                  tatArr.push([procss[0], time, procss[1], (time - procss[1])]); 
-               }
-
-           } else if (procss[2] != 0) {
-               ganttchrtArr[ganttchrtArr.length] = [procss[0], time += procss[2]];
-               procss[2] -= procss[2];
-
-               //TAT
-               tatArr.push([procss[0], time, procss[1], (time - procss[1])]); 
-               TATtotal += time - procss[1];    
-           }
-       }
-
-         //WT
-         bubble(tatArr, false); 
-         for(let x = 0; x < tatArr.length; x++ ){
-             wtArr.push([tatArr[x][0], tatArr[x][3], copyArr[x][2], (tatArr[x][3] - copyArr[x][2])]);
-             WTtotal += tatArr[x][3] - copyArr[x][2];
+             if(time < next){
+                ganttchrtArr[ganttchrtArr.length] = ["///", time += (next - time)]; 
+             }
+             //TAT
+             tatArr.push([procss[0], time, procss[1], (time - procss[1])]); 
+             TATtotal += time - procss[1];    
          }
-         
+     }
+
+       //WT
+       bubble(tatArr, false); 
+       for(let x = 0; x < tatArr.length; x++ ){
+           wtArr.push([tatArr[x][0], tatArr[x][3], copyArr[x][2], (tatArr[x][3] - copyArr[x][2])]);
+           WTtotal += tatArr[x][3] - copyArr[x][2];
+       }
 
          gChartDisplay(ganttchrtArr);
          outputDisplay(tatArr,"stat1", "ot1","tat-table", "CT", "AT", "TAT = CT - AT","TAT", TATtotal);
