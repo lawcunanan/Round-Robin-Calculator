@@ -138,13 +138,14 @@ function withAT() {
          } else if (procss[2] != 0) {
              ganttchrtArr[ganttchrtArr.length++] = [procss[0], time += procss[2]];
              procss[2] -= procss[2];
-             
+            
+             //TAT
+             tatArr.push([procss[0], time, procss[1], (time - procss[1])]); 
+             TATtotal += time - procss[1]; 
+            
              if(time < next){
                 ganttchrtArr[ganttchrtArr.length] = ["///", time += (next - time)]; 
              }
-             //TAT
-             tatArr.push([procss[0], time, procss[1], (time - procss[1])]); 
-             TATtotal += time - procss[1];    
          }
      }
 
