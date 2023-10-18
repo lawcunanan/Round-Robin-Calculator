@@ -127,7 +127,7 @@ function userInput() {
         document.getElementById("label-gantt").innerHTML = "Gantt Chart";  
     } 
 
-   // clr();
+    clr();
 }
 
 function withAT() {
