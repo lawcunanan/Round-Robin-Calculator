@@ -1,7 +1,6 @@
 let timequantum = 0;
 const manipulateArr= [];
 const copyArr = [];
-
 const ganttchrtArr = [];
 const tatArr = [];
 const wtArr  = [];
@@ -13,7 +12,6 @@ function gChartDisplay(arr) {
         tdrow1  += `<td>${arr[x][0]}</td>`;
         tdrow2  += `<td>${arr[x][1]}</td>`; 
    }
-
    document.getElementById("gant-table").innerHTML = `</tr>${tdrow1}<tr>${tdrow2}</tr>`;
 }
 
@@ -92,6 +90,7 @@ function userInput() {
 
     if (/[^0-9.\s]/.test(AT) || /[^0-9.\s]/.test(BT) || isNaN(TQ)) {
         alert("NUMBER ONLY!\nPlease fill in the required field");
+        clr();
         return;
     }
 
@@ -125,7 +124,7 @@ function userInput() {
 }
 
 function withAT() {
-    let time = 0, TATtotal = 0, WTtotal = 0;
+    let time = 0, TATtotal = 0, WTtotal = 0, total = 0;
 
     while (manipulateArr.length > 0) {
      
@@ -133,7 +132,8 @@ function withAT() {
          let next = manipulateArr.length > 0 ? manipulateArr[0][1] : null;
 
          if (procss[2] > timequantum) {
-             ganttchrtArr[ganttchrtArr.length++] = [procss[0], time += timequantum]; 
+             total = (time += timequantum);
+             ganttchrtArr[ganttchrtArr.length++] = [procss[0], (total % 1 !== 0 ? total.toFixed(1) : total)]; 
              procss[2] -= timequantum;
              manipulateArr.push(procss);
 
@@ -142,16 +142,18 @@ function withAT() {
              }
 
          } else if (procss[2] != 0) {
-             ganttchrtArr[ganttchrtArr.length++] = [procss[0], time += procss[2]];
+             total = (time += procss[2]);
+             ganttchrtArr[ganttchrtArr.length++] = [procss[0], (total % 1 !== 0 ? total.toFixed(1) : total)];
              procss[2] -= procss[2];
             
              //TAT
-             let total = time - procss[1];
+             total = (time - procss[1]);
              tatArr.push([procss[0], time, procss[1], (total % 1 !== 0 ? total.toFixed(1) : total)]); 
              TATtotal += time - procss[1]; 
             
              if(time < next){
-                ganttchrtArr[ganttchrtArr.length] = ["///", time += (next - time)]; 
+                total = (time += (next - time));
+                ganttchrtArr[ganttchrtArr.length] = ["///", (total % 1 !== 0 ? total.toFixed(1) : total)]; 
              }
          }
      }
@@ -172,13 +174,14 @@ function withAT() {
 
 
    function withoAT() {
-       let time = 0, totalCT= 0;
+       let time = 0, totalCT= 0, total = 0;
    
        while (manipulateArr.some(([_, bt]) => bt > 0)) {
            for (let i = 0; i < manipulateArr.length; i++) {
                if (manipulateArr[i][1] > 0) {
                    const exe = Math.min(manipulateArr[i][1], timequantum);
-                   ganttchrtArr.push([manipulateArr[i][0], time += exe]);
+                   total  = (time += exe);
+                   ganttchrtArr.push([manipulateArr[i][0], (total % 1 !== 0 ? total.toFixed(1) : total)]);
                    manipulateArr[i][1] -= exe; 
                }
            }
@@ -200,5 +203,5 @@ function withAT() {
      }else{
         socialLinks.classList.remove("transformed");
         click = true;
-     } 
+     }
    }
