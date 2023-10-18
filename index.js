@@ -1,3 +1,4 @@
+
 let timequantum = 0;
 const manipulateArr= [];
 const copyArr = [];
@@ -12,6 +13,7 @@ function gChartDisplay(arr) {
         tdrow1  += `<td>${arr[x][0]}</td>`;
         tdrow2  += `<td>${arr[x][1]}</td>`; 
    }
+
    document.getElementById("gant-table").innerHTML = `</tr>${tdrow1}<tr>${tdrow2}</tr>`;
 }
 
@@ -54,6 +56,11 @@ function clrOutput() {
     document.getElementById("table-solve").innerHTML = '';
     document.getElementById("gant-table").innerHTML = '';
    [manipulateArr, copyArr, ganttchrtArr, tatArr, wtArr].forEach(arr => arr.length = 0);
+}
+
+function dcml(numb){
+   let total = (numb % 1 !== 0) ? numb.toFixed(1) : numb; 
+   return parseFloat(total);
 }
 
 function bubble(arr, bol) {
@@ -120,20 +127,19 @@ function userInput() {
         document.getElementById("label-gantt").innerHTML = "Gantt Chart";  
     } 
 
-    clr();
+   // clr();
 }
 
 function withAT() {
-    let time = 0, TATtotal = 0, WTtotal = 0, total = 0;
+    let time = 0, TATtotal = 0, WTtotal = 0;
 
     while (manipulateArr.length > 0) {
      
          let procss = manipulateArr.shift();
          let next = manipulateArr.length > 0 ? manipulateArr[0][1] : null;
 
-         if (procss[2] > timequantum) {
-             total = (time += timequantum);
-             ganttchrtArr[ganttchrtArr.length++] = [procss[0], (total % 1 !== 0 ? total.toFixed(1) : total)]; 
+         if (procss[2] > timequantum) { 
+             ganttchrtArr[ganttchrtArr.length++] = [procss[0], dcml((time += timequantum))]; 
              procss[2] -= timequantum;
              manipulateArr.push(procss);
 
@@ -142,18 +148,15 @@ function withAT() {
              }
 
          } else if (procss[2] != 0) {
-             total = (time += procss[2]);
-             ganttchrtArr[ganttchrtArr.length++] = [procss[0], (total % 1 !== 0 ? total.toFixed(1) : total)];
+             ganttchrtArr[ganttchrtArr.length++] = [procss[0], dcml((time += procss[2]))];
              procss[2] -= procss[2];
             
              //TAT
-             total = (time - procss[1]);
-             tatArr.push([procss[0], time, procss[1], (total % 1 !== 0 ? total.toFixed(1) : total)]); 
-             TATtotal += time - procss[1]; 
+             tatArr.push([procss[0], dcml(time), procss[1], dcml((time - procss[1]))]); 
+             TATtotal += tatArr[tatArr.length-1][3]; 
             
              if(time < next){
-                total = (time += (next - time));
-                ganttchrtArr[ganttchrtArr.length] = ["///", (total % 1 !== 0 ? total.toFixed(1) : total)]; 
+                ganttchrtArr[ganttchrtArr.length] = ["///",  dcml((time += (next - time)))]; 
              }
          }
      }
@@ -161,14 +164,13 @@ function withAT() {
        //WT
        bubble(tatArr, false); 
        for(let x = 0; x < tatArr.length; x++ ){
-           let total = tatArr[x][3] - copyArr[x][2];
-           wtArr.push([tatArr[x][0], tatArr[x][3], copyArr[x][2], (total % 1 !== 0 ? total.toFixed(1) : total) ]);
-           WTtotal += tatArr[x][3] - copyArr[x][2];
+           wtArr.push([tatArr[x][0], tatArr[x][3], copyArr[x][2], dcml((tatArr[x][3] - copyArr[x][2]))]);
+           WTtotal += wtArr[x][3];
        }
 
          gChartDisplay(ganttchrtArr);
-         outputDisplay(tatArr,"stat1", "ot1","tat-table", "CT", "AT", "TAT = CT - AT","TAT", TATtotal);
-         outputDisplay(wtArr,"stat2", "ot2","wt-table", "TAT", "BT", "WT = TAT - BT","WT", WTtotal);
+         outputDisplay(tatArr,"stat1", "ot1","tat-table", "CT", "AT", "TAT = CT - AT","TAT", dcml(TATtotal));
+         outputDisplay(wtArr,"stat2", "ot2","wt-table", "TAT", "BT", "WT = TAT - BT","WT", dcml(WTtotal));
 
   }
 
@@ -180,8 +182,7 @@ function withAT() {
            for (let i = 0; i < manipulateArr.length; i++) {
                if (manipulateArr[i][1] > 0) {
                    const exe = Math.min(manipulateArr[i][1], timequantum);
-                   total  = (time += exe);
-                   ganttchrtArr.push([manipulateArr[i][0], (total % 1 !== 0 ? total.toFixed(1) : total)]);
+                   ganttchrtArr.push([manipulateArr[i][0], dcml(time += exe)]);
                    manipulateArr[i][1] -= exe; 
                }
            }
@@ -192,10 +193,10 @@ function withAT() {
        }
 
         gChartDisplay(ganttchrtArr);
-        output(ganttchrtArr,"ot1", totalCT);
+        output(ganttchrtArr,"ot1", dcml(totalCT));
    }
   
-   click = true;
+    click = true;
    function transform(){
      if(click){
         socialLinks.classList.add("transformed");
@@ -203,5 +204,5 @@ function withAT() {
      }else{
         socialLinks.classList.remove("transformed");
         click = true;
-     }
+     } 
    }
