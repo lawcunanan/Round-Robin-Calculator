@@ -66,7 +66,7 @@ function dcml(numb){
 function bubble(arr, bol) {
    for (let x = 0; x < arr.length; x++) {
        for (let z = 0; z < arr.length - 1; z++) {
-           if ((arr[z][1] > arr[z + 1][1] && bol)  || (arr[z][0] > arr[z + 1][0] && !bol) ) {
+           if ((arr[z][1] > arr[z + 1][1] && bol)  || (parseFloat(arr[z][0].substring(1)) > parseFloat(arr[z + 1][0].substring(1)) && !bol) ) {
                let temp = arr[z + 1];
                arr[z + 1] = arr[z];
                arr[z] = temp;
